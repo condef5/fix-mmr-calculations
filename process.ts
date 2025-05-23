@@ -5,10 +5,11 @@ type MatchResult = {
   matchId: string;
   userId: string;
   mmrChange: number;
+  gameEndReason: string;
   completedAt: string;
 };
 
-const leaderboardNumber = 10;
+const leaderboardNumber = 20;
 const sumMmr = (matchResults: MatchResult[]) =>
   matchResults.reduce((acc, item) => acc + item.mmrChange, 1000);
 const usersMap = new Map(users.map((user) => [user.id, user.userName]));
@@ -38,6 +39,8 @@ const groupedByUserId: { [key: string]: MatchResult[] } = {};
 
 for (const matchResult of Object.values(grouped)) {
   const userId = matchResult.userId;
+  if (matchResult.gameEndReason == 'SelectedBeastTimeout') continue;
+
   if (!groupedByUserId[userId]) {
     groupedByUserId[userId] = [matchResult];
   } else {
@@ -54,11 +57,10 @@ const sorted = Object.entries(groupedByUserId)
   .sort((a, b) => b.mmr - a.mmr);
 
 // step 4: print the top 10 users
-console.log(
-  sorted.slice(0, leaderboardNumber).map((u) => {
-    return {
-      userName: usersMap.get(u.userId),
-      mmr: u.mmr,
-    };
-  })
-);
+console.log('--------------------------');
+sorted
+  .slice(0, leaderboardNumber)
+  .forEach((u, index) =>
+    console.log(`${index + 1}. ${usersMap.get(u.userId)}: ${u.mmr}`)
+  );
+console.log('--------------------------');

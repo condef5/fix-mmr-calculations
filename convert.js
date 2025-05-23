@@ -21,7 +21,8 @@ async function convertCSVtoJSON() {
     matchId: row.MatchId,
     userId: row.UserId,
     mmrChange: Number(row.MmrChange),
-    completedAt: row.CompletedAt
+    completedAt: row.CompletedAt,
+    gameEndReason: row.GameEndReason
   }));
 
   await writeFile(jsonFilePath, JSON.stringify(filtered, null, 2));
